@@ -24,9 +24,16 @@ notes/
 │   └── qa-log.md        # Flamingo 学习问答记录
 ├── llava/
 │   └── qa-log.md        # LLaVA 学习问答记录
-└── vlm/
-    └── rl-training.md   # VLM 的 RL 训练（专题笔记）
+├── vlm/
+│   └── rl-training.md   # VLM 的 RL 训练（专题笔记）
+└── pytorch-math-softmax-logsumexp.md  # Softmax 数值稳定与 Log-Sum-Exp
 ```
+
+## 学习笔记
+
+论文问答之外的数学与框架笔记：
+
+- [Softmax 数值稳定与 Log-Sum-Exp](notes/pytorch-math-softmax-logsumexp.md)：朴素 `exp` 为何溢出，以及 `F.softmax`、`F.log_softmax`、`nn.CrossEntropyLoss` 如何保持稳定（2026-10-18）
 
 ## 学习方式
 
