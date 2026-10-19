@@ -26,7 +26,8 @@ notes/
 │   └── qa-log.md        # LLaVA 学习问答记录
 ├── vlm/
 │   └── rl-training.md   # VLM 的 RL 训练（专题笔记）
-└── pytorch-math-softmax-logsumexp.md  # Softmax 数值稳定与 Log-Sum-Exp
+├── pytorch-math-softmax-logsumexp.md  # Softmax 数值稳定与 Log-Sum-Exp
+└── pytorch-math-scaled-dot-product-attention.md  # 缩放点积注意力
 ```
 
 ## 学习笔记
@@ -34,6 +35,7 @@ notes/
 论文问答之外的数学与框架笔记：
 
 - [Softmax 数值稳定与 Log-Sum-Exp](notes/pytorch-math-softmax-logsumexp.md)：朴素 `exp` 为何溢出，以及 `F.softmax`、`F.log_softmax`、`nn.CrossEntropyLoss` 如何保持稳定（2026-10-18）
+- [Scaled Dot-Product Attention](notes/pytorch-math-scaled-dot-product-attention.md)：从 `QK^T / √d_k` 到 softmax 再乘 `V`，以及它和 FlashAttention 在数学上相同、在访存上不同（2026-10-19）
 
 ## 学习方式
 
