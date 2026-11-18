@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    participant U as VSCode UI
+    participant WV as Webview
+    participant T as Task
+    participant LLM
+    participant LD as LoopDetector
+    participant CP as CommandPermission
+    participant H as ToolHandler
+    participant FS as 文件系统
+
+    U->>WV: "修复 auth.ts 的 bug" + Plan mode
+    WV->>T: initiateTaskLoop()
+    T->>T: recursivelyMakeClineRequests()
+    T->>LLM: attemptApiRequest (with plan_mode tools)
+    LLM-->>T: stream chunks (含 <read_file><path>...</path>)
+    T->>T: 解析 XML 工具块
+    T->>LD: checkRepeatedToolCall(read_file, sig1)
+    LD-->>T: { soft: false, hard: false }
+    T->>H: ReadFileToolHandler.execute()
+    H->>FS: 读 auth.ts
+    FS-->>H: 内容
+    H-->>T: ToolResult
+    T->>T: recursivelyMakeClineRequests (递归)
+
+    T->>LLM: 下一轮（带 read 结果）
+    LLM-->>T: <plan_mode_respond><response>方案...</response></plan_mode_respond>
+    T->>H: PlanModeRespondHandler.execute()
+    H->>U: 显示方案 + 等待审批
+
+    Note over U: 用户审过，切换 Act mode
+    U->>WV: switch to Act
+    WV->>T: continueTask (now in Act mode, tool set 变)
+    T->>LLM: attemptApiRequest (with act_mode tools)
+    LLM-->>T: stream chunks (含 <execute_command><command>npm test</command></execute_command>)
+    T->>LD: checkRepeatedToolCall(execute_command, sig)
+    LD-->>T: ok
+    T->>CP: validateCommand("npm test")
+    CP-->>T: allowed
+    T->>H: ExecuteCommandToolHandler.execute()
+    H->>FS: 跑 npm test
+    FS-->>H: 输出
+    H-->>T: ToolResult
+    T->>T: 继续递归...

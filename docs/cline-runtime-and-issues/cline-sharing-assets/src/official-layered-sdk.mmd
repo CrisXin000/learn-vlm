@@ -1,0 +1,14 @@
+flowchart LR
+  shared["@cline/shared"]
+  llms["@cline/llms"]
+  agents["@cline/agents"]
+  core["@cline/core"]
+  apps["Host Apps"]
+
+  llms --> shared
+  agents --> llms
+  agents --> shared
+  core --> agents
+  core --> llms
+  core --> shared
+  apps --> core

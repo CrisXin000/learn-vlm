@@ -1,0 +1,23 @@
+flowchart TB
+    User["VSCode UI"] --> WebView["Webview Provider"]
+    WebView --> Task["Task 类<br/>(core/task/index.ts)"]
+
+    Task --> Loop["recursivelyMakeClineRequests<br/>(递归循环)"]
+    Loop --> Stream["attemptApiRequest<br/>(流式调 LLM)"]
+
+    Stream --> Parse["XML tool block 解析<br/>(assistant-message)"]
+    Parse --> Exec["ToolExecutor"]
+
+    Exec --> LoopDet{"LoopDetection<br/>checkRepeatedToolCall"}
+    LoopDet -->|soft| Warn["注入警告 message"]
+    LoopDet -->|hard| Stop["升级用户或失败"]
+    LoopDet -->|ok| Perm{"CommandPermission?"}
+
+    Perm -->|allowed| Handler["对应 ToolHandler<br/>(23 个之一)"]
+    Perm -->|denied| Deny["拒绝并报错"]
+
+    Handler --> Result["Tool Result"]
+    Result --> Ctx{"ContextManager<br/>需要 condense?"}
+    Ctx -->|是| Cond["SummarizeTask 工具<br/>压缩历史"]
+    Ctx -->|否| Loop
+    Cond --> Loop

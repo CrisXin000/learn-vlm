@@ -1,0 +1,8 @@
+flowchart TB
+  append["session transcript append"] --> canon["canonical session history<br/>(full, append-only source of truth)"]
+  canon --> storage["session storage<br/>messages.json"]
+  canon --> side["compaction sidecar<br/>compacted working context"]
+  side --> hash["validate prefix hash"]
+  storage --> proj["request projection"]
+  hash --> proj
+  proj --> model["model request messages"]

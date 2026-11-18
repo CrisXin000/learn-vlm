@@ -1,0 +1,14 @@
+flowchart TD
+    WV["React webview (VS Code)"] --> PB["ProtoBus (gRPC)<br/>cline/*.proto"]
+    CLI["@cline/cli (terminal)"] --> PB
+    PB --> CORE["Cline core<br/>task / controller / api / context"]
+
+    CORE --> LOOP["Task loop<br/>LLM → tool → human approval → result"]
+    LOOP --> LLM["sdk/packages/llms<br/>vendors + AI SDK + gateway"]
+    LOOP --> TOOLS["Tools<br/>read/write/edit/execute/browser/mcp"]
+
+    CORE --> HB["HostBridge (gRPC)<br/>host/*.proto"]
+    HB --> VSC["VS Code host<br/>files·diff·terminal·env"]
+    HB --> EXT["Standalone host<br/>CLI / other editors"]
+
+    CORE --> CP["Checkpoints<br/>git-shadow snapshots"]

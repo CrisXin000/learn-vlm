@@ -1,0 +1,37 @@
+graph TB
+    Start([用户任务输入<br/>User Task Input]) --> Assemble[消息组装层<br/>Message Assembly]
+    Assemble --> |包含| UserReq[用户请求<br/>User Request]
+    Assemble --> |包含| SysPrompt[系统提示词<br/>System Prompt]
+    Assemble --> |包含| EnvCtx[环境上下文<br/>Environment Context]
+    UserReq -.-> Assemble
+    SysPrompt -.-> Assemble
+    EnvCtx -.-> Assemble
+    Assemble --> ModeCheck{当前模式?<br/>Current Mode}
+    ModeCheck -->|PLAN MODE| PlanMode[PLAN MODE<br/>规划模式]
+    ModeCheck -->|ACT MODE| ActMode[ACT MODE<br/>执行模式]
+    PlanMode --> PlanExplore[信息收集<br/>read_file, search_files<br/>ask_followup_question]
+    PlanExplore --> PlanAnalyze[分析与规划<br/>Analyze and Plan]
+    PlanAnalyze --> PlanRespond[呈现方案<br/>plan_mode_respond]
+    PlanRespond --> UserReview{用户审查<br/>User Review}
+    UserReview -->|需要修改| PlanExplore
+    UserReview -->|批准| SwitchToAct[切换到 ACT MODE]
+    SwitchToAct --> ActMode
+    ActMode --> ActAnalyze[任务分析<br/>Task Analysis]
+    ActAnalyze --> SetGoals[设定目标与成功标准<br/>Set Goals and Success Criteria]
+    SetGoals --> InitProgress[创建任务进度清单<br/>Initialize task_progress]
+    InitProgress --> SelectTool[选择工具<br/>Tool Selection]
+    SelectTool --> ToolExec[执行工具<br/>Tool Execution]
+    ToolExec --> |需要批准| ApprovalCheck{requires_approval?}
+    ApprovalCheck -->|true| UserApproval{用户批准?}
+    ApprovalCheck -->|false/auto-approve| ToolRun[运行工具<br/>Run Tool]
+    UserApproval -->|拒绝| SelectTool
+    UserApproval -->|批准| ToolRun
+    ToolRun --> ToolResult[获取工具结果<br/>Tool Result]
+    ToolResult --> UpdateProgress[更新进度<br/>Update task_progress]
+    UpdateProgress --> AnalyzeResult[分析结果<br/>Analyze Result]
+    AnalyzeResult --> TaskComplete{任务完成?<br/>Task Complete?}
+    TaskComplete -->|否| SelectTool
+    TaskComplete -->|是| Completion[呈现结果<br/>attempt_completion]
+    Completion --> UserFeedback{用户反馈<br/>User Feedback}
+    UserFeedback -->|需要改进| SelectTool
+    UserFeedback --> End([任务完成<br/>Task Done])

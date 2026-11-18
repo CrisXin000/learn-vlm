@@ -1,0 +1,10 @@
+flowchart TB
+  apps["Your application / CLI / VS Code / JetBrains"]
+  core["@cline/core<br/>Sessions, storage, built-in tools, hub, automation, telemetry"]
+  agents["@cline/agents<br/>Browser-compatible AgentRuntime / Agent loop"]
+  llms["@cline/llms<br/>Provider handlers, gateway, model catalogs"]
+  shared["@cline/shared<br/>Types, schemas, tools, hooks, extension contracts"]
+  apps --> core
+  core --> agents
+  core --> llms
+  core --> shared
