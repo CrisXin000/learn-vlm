@@ -1,0 +1,54 @@
+flowchart TD
+
+subgraph group_cli["CLI experience"]
+  node_cli_entry["CLI entry<br/>[main.ts]"]
+  node_cli_args["CLI options<br/>[program.ts]"]
+  node_tui_prompt["Prompt input"]
+  node_onboarding["Provider setup<br/>[controller.ts]"]
+end
+
+subgraph group_core["Agent core"]
+  node_agent_prompt["Prompt assembly<br/>[prompt.ts]"]
+  node_agent_runtime["Agent runtime<br/>[runtime-host.ts]"]
+  node_session_versions["Session checkpoints"]
+  node_session_stores[("Session and team stores<br/>[storage.ts]")]
+  node_cloud_sessions["Cloud sessions<br/>[controller.ts]"]
+  node_extensions["Plugins and MCP"]
+  node_teams["Multi-agent teams"]
+  node_providers["Model providers"]
+end
+
+subgraph group_editor["Editor integration"]
+  node_sdk_controller["SDK controller<br/>[SdkController.ts]"]
+  node_vscode_review["Diff review"]
+  node_vscode_storage[("Editor state<br/>[storage-context.ts]")]
+end
+
+subgraph group_hub["Hub and connectors"]
+  node_hub_server["Hub server<br/>[server.ts]"]
+  node_hub_web["Hub dashboard<br/>[App.tsx]"]
+  node_connectors["Messaging connectors"]
+  node_schedules["Scheduled agents"]
+end
+
+node_user(("User"))
+
+node_user -->|"runs prompt"| node_cli_entry
+node_cli_entry -->|"parses options"| node_cli_args
+node_cli_entry -.->|"opens TUI"| node_tui_prompt
+node_tui_prompt -->|"submits prompt"| node_agent_prompt
+node_cli_entry -.->|"starts session"| node_agent_runtime
+node_agent_runtime -.->|"uses prompt"| node_agent_prompt
+node_onboarding -->|"loads models"| node_providers
+node_agent_runtime -.->|"versions sessions"| node_session_versions
+node_session_versions -.->|"persists state"| node_session_stores
+node_agent_runtime -.->|"manages cloud sessions"| node_cloud_sessions
+node_sdk_controller -.->|"starts runtime"| node_agent_runtime
+node_vscode_review -.->|"shows review comments"| node_user
+node_hub_server -.->|"serves dashboard"| node_hub_web
+node_hub_server -.->|"controls sessions"| node_cloud_sessions
+node_connectors -.->|"routes conversations"| node_agent_runtime
+node_schedules -.->|"starts scheduled runs"| node_agent_runtime
+node_extensions -.->|"extends tools"| node_agent_runtime
+node_teams -.->|"coordinates agents"| node_agent_runtime
+node_vscode_storage -.->|"stores session data"| node_session_stores

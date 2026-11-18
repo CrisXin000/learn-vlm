@@ -1,0 +1,6 @@
+flowchart TD
+  start["run() or continue()"] --> model["model request"]
+  model --> tools{"tool calls, if any?"}
+  tools -->|yes| results["tool results"]
+  results --> model
+  tools -->|no / complete| done["run completes"]

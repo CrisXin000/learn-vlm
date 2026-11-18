@@ -1,0 +1,5 @@
+flowchart LR
+    UI["Webview / CLI"] -- "ProtoBus (gRPC)" --> CORE["Cline core"]
+    CORE -- "HostBridge (gRPC)" --> HOST["Host<br/>VS Code or standalone"]
+    CORE --> HP["HostProvider<br/>diff / terminal / workspace factories"]
+    HP --> HOST

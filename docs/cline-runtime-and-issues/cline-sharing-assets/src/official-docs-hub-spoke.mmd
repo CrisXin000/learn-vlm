@@ -1,0 +1,14 @@
+flowchart LR
+  subgraph clients["Client"]
+    cli["CLI / VS Code / JetBrains / custom app"]
+  end
+  subgraph hub["Hub (daemon)"]
+    coord["Coordinates sessions,<br/>routes events and approvals.<br/>Does not run the agent loop."]
+  end
+  subgraph spoke["Spoke (worker)"]
+    exec["Runs @cline/core<br/>agent loop, tools, stream"]
+  end
+  cli -->|"WebSocket: register, attach, input"| coord
+  coord -->|"assign / spawn worker"| exec
+  exec -->|"events, tool output"| coord
+  coord -->|"fan out events"| cli
